@@ -1,0 +1,76 @@
+---
+name: review-pr
+description: Use when reviewing a pull request given a Gitea PR URL. Runs one reviewer pass and one follow-up filter pass, then posts comments via Gitea MCP tools.
+---
+
+## Overview
+
+Two-pass review for a Gitea pull request. Pass 1 reviews the diff and finds issues. Pass 2 filters those issues down to only the ones worth posting. Built for small session/token budgets. Additional information may be provided such as a reference to a story.
+
+**Core principle:** Post only high-confidence, issues. Target Critical and High severity comments per PR.
+
+## When to Use
+
+- Reviewing a Gitea PR given its URL
+
+## When NOT to Use
+
+- Trivial PRs (typo fixes, dependency bumps, one-line config changes)
+
+## Workflow
+### Step 1: Load the PR via Gitea MCP
+
+Use the Gitea MCP tools to:
+- Fetch the PR from the given URL (title, description, linked issues)
+- Fetch the diff / changed files
+- Note the repo and file languages involved
+
+### Step 2: Check for relevant skills
+
+Before reviewing, check if a skill exists for the languages/frameworks touched by the diff (e.g. C#, rust, svelte, etc. skills). If skills apply, use them to inform what "good" looks like for that code — idioms, common pitfalls, conventions, best-practies.
+
+### Step 3: Reviewer pass (single sub-agent)
+
+Review the diff directly. The code likely has bugs, find them. Code reviews are a technical process, don't hedge, don't be polite, don't spare people's feelings. For each issue found, record:
+- **Category**: bug | security | performance | logic | style | acceptance criteria
+- **Confidence**: high | medium | low
+- **Priority**: high | medium | low
+- **Location**: file + line range
+- **Issue**: one sentence
+- **Fix**: concrete suggestion
+Only keep issues at medium+ confidence. Cover all five categories — don't skip a category just because nothing obvious jumped out; check each deliberately.
+We do want to include dead-code comments only when they are high confidence. Advise the author to validate the code is dead before removing it.
+If additional context is provided for acceptance criteria, consider these to be high-priority items.
+
+### Step 4: Follow-up pass (filter agent)
+
+Re-read findings from Step 3 as if you were a second, skeptical reviewer. Validate the claims made yourself. Drop anything that is:
+- Speculative or low-confidence
+- A nitpick, not a real bug/security/perf/logic/acceptance-criteria issue
+- Not clearly actionable
+- Not verifiable
+Keep only high-confidence issues. If nothing survives, say the PR looks fine — don't invent filler comments, do not leave compliments.
+
+### Step 5: Post comments via Gitea MCP
+
+For each surviving issue, use the Gitea MCP tools to leave a PR comment at the relevant file/line. Comment format:
+
+```
+**[category] priority: X, confidence: Y**
+Issue: <one sentence>
+Fix: <concrete suggestion>
+```
+
+If no issues survived, post a single summary comment stating the PR looks good, no blocking issues found.
+
+## Quick Reference
+ 
+| Item | Details |
+|---|---|
+| Categories | bug, security, performance, logic, style |
+| Reviewer pass | Single agent, primed to assume bugs exist |
+| Follow-up pass | Same/second agent, filters to high-confidence + high-priority |
+| Target output | 1-3 comments per PR |
+| Skills | Check for a skill matching the code's language/framework before reviewing |
+| Delivery | Post directly to the PR via Gitea MCP tools |
+
