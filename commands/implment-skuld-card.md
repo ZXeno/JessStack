@@ -4,15 +4,17 @@ description: Implement a Skuld card plan end-to-end (plan, code, test, PR, notif
 agent: build
 ---
 
-Using your Skuld MCP tools, read the contents of the card titled `$ARGUMENTS`.
+Using your Skuld MCP tools, read the contents of the card id: `$ARGUMENTS`.
 
 Move the card to the "In Progress" column in Skuld.
+
+Always apply the `unslop` skill.
 
 Create a detailed work plan. For the items in your TODO list, add them to the "Tasks" on the related card in Skuld.
 
 Begin implementation work according to the acceptance criteria. Each time you complete an item on your todo list, update the same task on the card in Skuld. 
 
-Utilize available skills relevent to the language being worked on and adhere to the style guidelines and requirements in agents.md and in the card. Follow the plan and ensure all acceptance criteria are met. Reuse existing components everywhere possible. Use existing implementations for code everywhere possible. Frontend code should be testable by the user once a pull request is created. Validate implementations meet acceptance criteria after implementation. Always apply the `unslop` skill.
+Utilize available skills relevent to the language being worked on and adhere to the style guidelines and requirements in agents.md and in the card. Follow the plan and ensure all acceptance criteria are met. Reuse existing components everywhere possible. Use existing implementations for code everywhere possible. Frontend code should be testable by the user once a pull request is created. Validate implementations meet acceptance criteria after implementation. 
 
 Tests are required for all work.
 

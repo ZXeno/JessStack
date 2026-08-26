@@ -3,17 +3,21 @@ name: resolve-pr-comments
 description: Resolve comments on a gitea pull request. References the related Skuld card.
 ---
 
-Usage: /resolve-pr-comments <card_name>
+Usage: /resolve-pr-comments <pr_url> <card_id>
 
 Arguments provided: $ARGUMENTS
 
-Parse the arguments above: the first token is the Skuld board name (`board_name`), and the remainder is the Skuld card title (`card_name`).
+Parse the arguments above: the first token is the pull-request URL (`pr_url`), and the remainder is the Skuld card id (`card_id`).
 
-Read the review comments on the open PR. Validate each comment and create a detailed work plan.
+Always apply the `unslop` skill.
 
-Story documentation can be found in Skuld, card title containing the acceptance criteria is `card_name`.
+Using your Gitea MCP tools, read the open comments on the pr at `pr_url`.
 
-Utilize available skills relevent to the language being worked on and adhere to the style guidelines and requirements in agents.md and in the card. Always apply the `unslop` skill.
+Validate each comment and create a detailed work plan.
+
+Story documentation can be found in Skuld, card id containing the acceptance criteria is `card_id`.
+
+Utilize available skills relevent to the language being worked on and adhere to the style guidelines and requirements in agents.md and in the card. 
 
 Follow the plan and ensure all review comments are addressed appropriately.
 
