@@ -60,14 +60,13 @@ The `title` parameter performs a case-insensitive substring match (SQL ILIKE).
 Returns: `{ cards: [{ id, board_id, column_id, title }] }`
 
 ### get_card
-Read full card details including description and task items.
+Read full card details including description and task items. The board is resolved from the card; a legacy `board_id` field in the arguments is ignored.
 
 | Parameter | Type | Required |
 |---|---|---|
-| `board_id` | string (uuid) | yes |
 | `card_id` | string (uuid) | yes |
 
-Returns: `{ id, board_id, column_id, title, description, position, assignee_id, tasks: [{ id, card_id, content, is_completed, position }] }`
+Returns: `{ id, board_id, column_id, title, description, position, assignee_id, tasks: [{ id, card_id, content, is_completed, position }] }`. Use the returned `board_id` for follow-up mutation calls.
 
 ### create_card
 Create a card in a specified column.
