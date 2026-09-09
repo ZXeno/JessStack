@@ -37,4 +37,4 @@ Once you are finished with your work, commit your changes, create a pull request
 
 Include in your pull request description a list of each card title and full card id. make your pull request descriptions terse but descriptive. Always apply the `unslop` skill to your descriptions.
 
-Create a bulleted list of each card title and id separated by ` | ` , enclosed in backticks as <`[card_id]` | `[card_title]`> with the url on a separate line after the list, with the singular message separated by a blank line after: "Work is completed on the above cards. PR URL: `pr_url`". Notify me using your rune-mcp tools and skills with the message you created with the prior instruction.
+Create a bulleted list of each card title and id separated by ` | ` , enclosed in backticks as <`[card_id]` | `[card_title]`> with the url on a separate line after the list, with the singular message separated by a blank line after: "Work is completed on the above cards. PR URL: `pr_url`". Notify me using the `rune-send-message` skill with the message you created with the prior instruction.

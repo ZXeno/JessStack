@@ -29,7 +29,7 @@ Once you are finished with your work, commit your changes, create a pull request
 
 Include in your pull request description the card title and full card id. make your pull request descriptions terse but descriptive. Always apply the `unslop` skill to your pull request description.
 
-Once the pull request has been created, notify me using your rune-mcp skills with the following message format:
+Once the pull request has been created, notify me using the `rune-send-message` skill with the following message format:
 
 ```
 "I have completed task `<card_name>` - card id `<card_id>`. PR created  at `<pr_url>`"

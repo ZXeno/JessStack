@@ -31,4 +31,4 @@ Keep all code comments to a **minimum**. No more than 2-3 sentences, no more tha
 
 Once you've finished your work, commit your changes and push them up to the repository. Then comment on and resolve the open review comments. 
 
-Once you've finished, notify me using your rune-mcp tools and skills with the following message format `"I have resolve the comments left on pull request <pr_url>."` to notify me you have completed your work.
+Once you've finished, notify me using the `rune-send-message` skill with the following message format `"I have resolve the comments left on pull request <pr_url>."` to notify me you have completed your work.

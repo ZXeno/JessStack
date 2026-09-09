@@ -1,7 +1,7 @@
 ---
 name: rune-mcp
 description: Configure and drive the Rune MCP server (Telegram bot over stdio). Use when setting up Rune as an MCP server or calling its tools.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Rune MCP server
@@ -49,14 +49,20 @@ Fetches pending messages addressed to the bot via getUpdates. Takes no parameter
 
 ### send_message
 
-Sends a text message to an allowlisted chat.
+Sends a text message to an allowlisted chat, or broadcasts when no chat is given.
 
-- `chat_id` (i64, required)
+- `chat_id` (i64, optional) targets one allowlisted chat; omit it to send to every allowlisted chat
 - `text` (string, required)
 - `reply_to_message_id` (i64, optional) threads a reply
 - `parse_mode` (`"MarkdownV2"` or `"HTML"`, optional)
 
-Returns `{"message_id": N}`. A non-allowlisted `chat_id` is refused locally with a generic error before any network I/O. Telegram API errors surface as tool errors with the token and URL stripped.
+Returns a JSON array with one entry per chat: `{"chat_id": N, "message_id": M}` on success, `{"chat_id": N, "error": "..."}` on failure. A failed send never stops the remaining sends. The result is a tool error only when every send fails, and its content is still the array. Example: `[{"chat_id": 123456789, "message_id": 577}]`.
+
+A non-allowlisted `chat_id` is refused locally with a generic error before any network I/O. Telegram API errors surface per chat with the token and URL stripped.
+
+### notify
+
+Sends text to every allowlisted chat. The one parameter is `text` (string, required); there is no `chat_id`. Use it when you do not know a chat ID and should not go reading your own config to find one. Returns the same receipt array as a broadcast `send_message`, and a tool error only when every send fails.
 
 ### send_document
 
@@ -71,5 +77,6 @@ The Telegram filename is the file's basename. Returns `{"message_id": N}`. Files
 ## Error behavior
 
 - Non-allowlisted chats: local, generic refusal. No confirmation the chat exists, no network traffic.
-- Telegram API errors: surfaced as tool errors, token never included.
+- Send results: always a JSON array of per-chat receipts. Failures appear as `{chat_id, error}` entries and never abort the remaining sends. Every send failing is the only case that flags the whole result as a tool error.
+- Telegram API errors: surfaced per chat, token never included.
 - Startup: missing or invalid env vars abort with the variable name on stderr.
