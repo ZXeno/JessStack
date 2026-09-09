@@ -1,6 +1,8 @@
 ---
 name: resolve-pr-comments
 description: Resolve comments on a gitea pull request. References the related Skuld card.
+agent: build
+model: zai-coding-plan/glm-5.3
 ---
 
 Usage: /resolve-pr-comments <pr_url> <card_id>
@@ -29,4 +31,4 @@ Keep all code comments to a **minimum**. No more than 2-3 sentences, no more tha
 
 Once you've finished your work, commit your changes and push them up to the repository. Then comment on and resolve the open review comments. 
 
-Once you've finished, use the command `hermes send --to telegram "Benimaru has completed work on the current pull-request review for <card_name>."` to notify you have completed your work.
+Once you've finished, notify me using your rune-mcp tools and skills with the following message format `"I have resolve the comments left on pull request <pr_url>."` to notify me you have completed your work.

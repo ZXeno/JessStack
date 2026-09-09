@@ -83,7 +83,7 @@ Returns: `{ id, title, description, board_id, column_id, position, assignee_id }
 New cards get position 10 within their column. Subsequent cards in the same column increment position.
 
 ### update_card
-Update a card title or description. Either field is optional; pass only the fields you want to change.
+Update a card title, description, or iteration. Each field is optional; pass only the fields you want to change.
 
 | Parameter | Type | Required |
 |---|---|---|
@@ -91,6 +91,13 @@ Update a card title or description. Either field is optional; pass only the fiel
 | `card_id` | string (uuid) | yes |
 | `title` | string (nullable) | no |
 | `description` | string (nullable) | no |
+| `iteration_id` | string (uuid, nullable) | no |
+
+`iteration_id` omitted means no change; explicit null unassigns the
+card's iteration; a value assigns it. Passing `iteration_id` requires
+the `cards:assign` permission on the token (in addition to
+`cards:update` for the tool itself). The iteration must belong to the
+same board, otherwise the call fails with a bad-request error.
 
 Returns: the updated card object.
 
@@ -105,13 +112,23 @@ Soft-delete a card.
 Returns: `{ deleted: bool }`
 
 ### move_card
-Move a card to a specified column.
+Move a card to a specified column, optionally anchored.
 
 | Parameter | Type | Required |
 |---|---|---|
 | `board_id` | string (uuid) | yes |
 | `card_id` | string (uuid) | yes |
 | `column_id` | string (uuid) | yes |
+| `after_card_id` | string (uuid) | no |
+| `before_card_id` | string (uuid) | no |
+
+`after_card_id` and `before_card_id` are mutually exclusive; at most one
+may be supplied. `after_card_id` places the card immediately after that
+card in the destination column; `before_card_id` places it immediately
+before. When neither is supplied the card is appended at the end. The
+anchor must reference a card in the destination column (not the moved
+card itself), otherwise the call fails with a bad-request error. The
+destination column is renumbered to dense 1..n after the move.
 
 Returns: the updated card object.
 
@@ -123,6 +140,22 @@ Assign a card to a user or unassign (pass null for `assignee_id`).
 | `board_id` | string (uuid) | yes |
 | `card_id` | string (uuid) | yes |
 | `assignee_id` | string (uuid, nullable) | yes (pass null to unassign) |
+
+Returns: the updated card object.
+
+### assign_card_iteration
+Assign a card to an iteration or unassign (pass null for `iteration_id`).
+
+| Parameter | Type | Required |
+|---|---|---|
+| `board_id` | string (uuid) | yes |
+| `card_id` | string (uuid) | yes |
+| `iteration_id` | string (uuid, nullable) | yes (pass null to unassign) |
+
+The iteration must belong to the same board and not be deleted,
+otherwise the call fails with a bad-request error. Assigning the
+iteration the card already has still records the audit event (no-op
+parity with the HTTP route). Requires the `cards:assign` permission.
 
 Returns: the updated card object.
 
@@ -175,6 +208,17 @@ List users with an optional case-insensitive username filter. Requires admin rol
 Returns: `{ users: [{ id, username }] }`
 
 Pass `username` to filter by a case-insensitive partial match. Omit it to list all users. Only `id` and `username` are returned — no email, role, or other sensitive fields.
+
+### list_board_access_users
+List the users on a board's access list. Requires `boards:read` permission and access to the board (no admin role). Missing boards and boards the token cannot read both fail with the same "board not found or access denied" error.
+
+| Parameter | Type | Required |
+|---|---|---|
+| `board_id` | string (uuid) | yes |
+
+Returns: `{ users: [{ user_id, display_name, is_deleted }] }`
+
+Each `user_id` is directly usable as `assign_card`'s `assignee_id`. Soft-deleted users stay listed with `display_name: "Deleted_User"` and `is_deleted: true`; no usernames, roles, or owner flags are exposed.
 
 ## Charters
 

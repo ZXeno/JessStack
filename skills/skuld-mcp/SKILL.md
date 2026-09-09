@@ -16,7 +16,7 @@ Manage Skuld project boards through the Skuld MCP toolset. Create boards, popula
 - Listing users to find assignee IDs for card assignment
 - Reading or updating a board's project charter (spec document)
 
-## Tool inventory (17 tools)
+## Tool inventory (19 tools)
 
 All tools use the `mcp__skuld__*` prefix (or `skuld__*` depending on the client). Authentication is via scoped MCP tokens. 16 permissions exist; `get_charter` reuses `boards:read`.
 
@@ -36,10 +36,11 @@ All tools use the `mcp__skuld__*` prefix (or `skuld__*` depending on the client)
 | `list_cards` | List cards matching a filter (by board, column, assignee, or title substring) |
 | `get_card` | Read full card details including description and task items |
 | `create_card` | Create a card in a specified column (requires board_id + column_id) |
-| `update_card` | Update a card title or description |
+| `update_card` | Update a card title, description, or iteration (`iteration_id` omitted = no change, null = unassign; changing it also requires the `cards:assign` permission) |
 | `delete_card` | Soft-delete a card |
-| `move_card` | Move a card to a specified column |
+| `move_card` | Move a card to a specified column, optionally anchored (`after_card_id`/`before_card_id`; omitted anchors append at the end) |
 | `assign_card` | Assign a card to a user or unassign (null) |
+| `assign_card_iteration` | Assign a card to an iteration or unassign (null); requires the `cards:assign` permission |
 
 ### Tasks (checklist items on cards)
 
@@ -54,6 +55,7 @@ All tools use the `mcp__skuld__*` prefix (or `skuld__*` depending on the client)
 | Tool | Purpose |
 |---|---|
 | `list_users` | List users with optional case-insensitive username filter (admin + `users:list` permission) |
+| `list_board_access_users` | List who has access to a board as `{user_id, display_name, is_deleted}` (requires `boards:read` + board access; `user_id` values work as `assign_card`'s `assignee_id`) |
 
 ### Charters
 
@@ -142,4 +144,4 @@ Column IDs are UUIDs assigned at board creation. Always call `get_board` first t
 5. **`get_board` returns a large payload.** Boards with many cards produce a large response. If the response is truncated by your client, the `columns` array appears at the end of the JSON payload, after all cards. Parse the tail or use a JSON streaming parser to extract column IDs rather than re-requesting.
 6. **`update_charter` uses PUT semantics.** The full content string replaces the existing charter. There is no patch or append mode. Always `get_charter` first, modify the content in memory, then `update_charter` with the complete new content.
 
-See `references/tool-schemas.md` for the full parameter schemas of all 17 tools.
+See `references/tool-schemas.md` for the full parameter schemas of all 19 tools.
