@@ -1,6 +1,7 @@
 ---
+name: review-skuld-pr
 description: Review a pull request against its Skuld card's acceptance criteria
-model: zai-coding-plan/glm-5.3-flash
+effort: xhigh
 ---
 
 Usage: /review-skuld-pr <pr_url> <card_name>

@@ -20,6 +20,7 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 | Skill | Use |
 |---|---|
 | `gitea-mcp` | Configure the Gitea MCP server and call its tools. |
+| `grill` | Interview the user relentlessly about a plan, decision, or idea until you reach a shared understanding. |
 | `review-pr` | Review a Gitea pull request with one review pass and one filter pass. Post the comments through the Gitea MCP tools. |
 | `rune-mcp` | Configure the Rune MCP server, a Telegram bot over stdio, and call its tools. |
 | `rune-send-message` | Send a Telegram message or notification through the Rune MCP tools. |
@@ -35,8 +36,10 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 
 | Command | Use |
 |---|---|
+| `impl-work-plan` | Begin implementation of a work plan from a plan file. Save and open an implementation report when done. |
 | `implment-skuld-card` | Implement one Skuld card. Plan, code, test, open a pull request, and send a notification. |
 | `multi-card-implement` | Implement more than one Skuld card with the same steps. |
+| `plan-skuld-card-impl` | Create an implementation plan for a Skuld card. Grill on the acceptance criteria before planning. |
 | `resolve-pr-comments` | Resolve the comments on a Gitea pull request. Read the related Skuld card. |
 | `review-skuld-pr` | Review a pull request against the acceptance criteria of its Skuld card. |
 

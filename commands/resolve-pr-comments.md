@@ -1,8 +1,7 @@
 ---
 name: resolve-pr-comments
 description: Resolve comments on a gitea pull request. References the related Skuld card.
-agent: build
-model: zai-coding-plan/glm-5.3
+effort: xhigh
 ---
 
 Usage: /resolve-pr-comments <pr_url> <card_id>

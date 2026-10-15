@@ -1,8 +1,7 @@
 ---
 name: multi-card-implement
 description: Implement multiple Skuld cards plan end-to-end (plan, code, test, PR, notify)
-agent: build
-model: zai-coding-plan/glm-5.3
+effort: xhigh
 ---
 
 Usage: /multi-card-implement <board_name> <additional_instructions>
