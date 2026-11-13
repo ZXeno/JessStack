@@ -1,7 +1,6 @@
 ---
 name: review-pr
 description: Use when reviewing a pull request given a Gitea PR URL. Runs one reviewer pass and one follow-up filter pass, then posts comments via Gitea MCP tools.
-effort: xhigh
 ---
 
 ## Overview
@@ -75,3 +74,4 @@ If no issues survived, post a single summary comment stating the PR looks good, 
 | Target output | 1-3 comments per PR |
 | Skills | Check for a skill matching the code's language/framework before reviewing |
 | Delivery | Post directly to the PR via Gitea MCP tools |
+

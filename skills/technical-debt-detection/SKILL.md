@@ -1,7 +1,6 @@
 ---
 name: technical-debt-detection
-description: Detect and report technical debt in a codebase. Use this skill whenever the user asks to find tech debt, review code quality, audit a repository, list code smells, or check for anti-patterns in any language or framework. Also use it when the user asks for a code review that should flag maintainability risk, not just bugs.
-effort: xhigh
+description: Detect and report technical debt in a codebase. Use this skill whenever the user asks to find tech debt, review code quality, audit a repository, list code smells, or check for anti-patterns — in any language or framework. Also use it when the user asks for a code review that should flag maintainability risk, not just bugs.
 ---
 
 # Technical Debt Detection
