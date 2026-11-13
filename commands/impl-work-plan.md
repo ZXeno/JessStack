@@ -21,7 +21,7 @@ If the user has not provided a directory location for the implementation path, s
 Follow the implementation plan precisely. Do not deviate from the plan.
 If a deviation from the plan is required, immediately stop implementation and /grill user on the correct course of action.
 
-Load any relevant skills to the codebase languages used in the codebase.
+Load any relevant skills to the languages used in the codebase.
 Unit tests are required for all work where feasible.
 
 Once you have completed your work, validate your changes against the acceptance criteria. Ensure unit tests include coverage for acceptance criteria.

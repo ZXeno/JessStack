@@ -120,8 +120,6 @@ Tell the user to start a new session and run /feature-spec-grill on the first ca
 Number each question. Letter each option. Give a tradeoff for each option and a recommendation for each question.
  
 ```markdown
------
-
 **Q1. <Question title>**
 <Question. Include the facts from the codebase or documents that apply.>
  
@@ -131,7 +129,7 @@ c. <Option>. Tradeoff: <cost and benefit>.
  
 Recommendation: <letter>. <Reason.>
  
------
+---
  
 **Q2. <Question title>**
 ...
