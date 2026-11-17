@@ -1,7 +1,8 @@
 ---
-name: implment-skuld-card
+name: impl-skuld-card
 description: Implement a Skuld card plan end-to-end (plan, code, test, PR, notify)
-effort: xhigh
+effort: high
+disable-model-invocation: true
 ---
 
 Using your Skuld MCP tools, read the contents of the card id: `$ARGUMENTS`.
@@ -22,9 +23,9 @@ Keep all code comments to a **minimum**. No more than 2-3 sentences, no more tha
 
 If the project has a docker image/docker compose file, ensure that the local dev container is removed, rebuilt, updated, running, and reachable once you've completed implementation.
 
-Update the `agents.md` file with relevant changes. Refrain from mentioning story or card ids/names.
+Only update the `agents.md` file with facts about the codebase. Do not mention story or card ids/names.
 
-Once you are finished with your work, commit your changes, create a pull request, then move the card in Skuld to the "Code Review" column.
+Once you are finished with your work, commit your changes, create a pull request, include the pull request in the appropriate field on the card, then move the card in Skuld to the "Code Review" column.
 
 Include in your pull request description the card title and full card id. make your pull request descriptions terse but descriptive.
 

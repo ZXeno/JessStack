@@ -2,7 +2,7 @@
 name: impl-work-plan
 description: Command to begin implementation of a work plan. Takes in the file path for work plan to implement.
 disable-model-invocation: true
-effort: xhigh
+effort: high
 ---
 
 Arguments: $ARGUMENTS

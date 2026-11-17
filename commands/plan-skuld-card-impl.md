@@ -2,6 +2,7 @@
 name: plan-skuld-card-impl
 description: Create an implementation plan for a skuld card. Takes a card id, and option the name of the relevant repository.
 effort: high
+disable-model-invocation: true
 ---
 
 Arguments: $ARGUMENTS
@@ -24,7 +25,7 @@ Move the card to the "In Progress" column of the board if it is not already in t
 
 The following repositories are relevant: {repositories}. If the user did not provide at least one repository, and the PWD is not a repository, ask the user for a repository path (or paths) before continuing. If none is provided after request, stop.
 
-Ground yourself in the codebase of the repositories. Load any relevant skills to the languages used in the codebase. If there are no acceptance criteria, stop and advise the user to run the `/card-spec-grill` command.
+Ground yourself in the codebase of the repositories. Load any relevant skills to the languages used in the codebase. If there are no acceptance criteria, stop and advise the user to run the `/feature-spec-grill` command.
 
 If the work item already contains acceptance criteria, identify where in the repository changes need to be made to meet the acceptance criteria defined in the work item.
 

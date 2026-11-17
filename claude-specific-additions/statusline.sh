@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 # Claude Code status line:
-# "<tokens> | Context: <pct>% | Session window: <pct>% | Weekly limit: <pct>% | Effort: <level> | <honcho>"
+# "<tokens> | Context: <pct>% | Session window: <pct>% | Weekly limit: <pct>% | Effort: <level>"
 # Percentages use a three-point color gradient (0% -> 50% -> 100%).
 # Shows reported values: context_window.total_input_tokens,
 # context_window.used_percentage, rate_limits.five_hour.used_percentage,
 # rate_limits.seven_day.used_percentage, effort.level.
-# The <honcho> segment comes from ~/.honcho/honcho-statusline.sh.
 # Dependencies: grep, sed, tr (no jq). Linux, macOS bash 3.2+, Git Bash on Windows.
-# Optional: python3 for the <honcho> segment. Without it, the script omits the segment.
 
 # Set a variable to a color, or to the default when the value is empty or not a "#RRGGBB" color:
 # set_color <variable name> <value> <default>
@@ -42,12 +40,6 @@ set_color EFFORT_LEVEL_COLOR "$STATUSLINE_EFFORT_LEVEL_COLOR" ""
 set_color PERCENT_COLOR_AT_0 "$STATUSLINE_PERCENT_COLOR_AT_0" "#08A357" # green
 set_color PERCENT_COLOR_AT_50 "$STATUSLINE_PERCENT_COLOR_AT_50" "#D8B400" # yellow
 set_color PERCENT_COLOR_AT_100 "$STATUSLINE_PERCENT_COLOR_AT_100" "#EA0000" # red
-
-# Honcho segment colors. The defaults are the colors of ~/.honcho/honcho-statusline.sh.
-set_color HONCHO_SYNCED_COLOR "$STATUSLINE_HONCHO_SYNCED_COLOR" "#82C8E1"     # diamond when memory context is synced
-set_color HONCHO_UNSYNCED_COLOR "$STATUSLINE_HONCHO_UNSYNCED_COLOR" "#787880" # diamond when no memory context is synced
-set_color HONCHO_ACTIVE_COLOR "$STATUSLINE_HONCHO_ACTIVE_COLOR" "#E6AF6E"     # glyph and status while memory is working
-set_color HONCHO_LABEL_COLOR "$STATUSLINE_HONCHO_LABEL_COLOR" "#787880"       # "honcho" text and its " · " separator
 # ----------------------------------------------------------------------------
 
 input=$(printf '%s' "$(cat)" | tr -d '\r\n')
@@ -172,32 +164,6 @@ if [ -n "$effort_level" ]; then
     "$separator" \
     "$(colorize "Effort:" "$EFFORT_LABEL_COLOR")" \
     "$(colorize "$effort_level" "$EFFORT_LEVEL_COLOR")"
-fi
-
-# Replace the fixed colors of the Honcho renderer with the configured colors.
-# Placeholders stop a configured color from matching a later replacement.
-# A color that a new renderer version adds keeps its own value.
-recolor_honcho() {
-  local text=$1 mark=$'\001'
-  local gray="${ESC}[38;2;120;120;128m" calm="${ESC}[38;2;130;200;225m" work="${ESC}[38;2;230;175;110m"
-  # Gray colors both the unsynced diamond and the label. Match the diamond first.
-  text=${text//"${gray}◇"/"${mark}U◇"}
-  text=${text//"$gray"/"${mark}L"}
-  text=${text//"$calm"/"${mark}S"}
-  text=${text//"$work"/"${mark}A"}
-  text=${text//"${mark}U"/"$(color_escape "$HONCHO_UNSYNCED_COLOR")"}
-  text=${text//"${mark}L"/"$(color_escape "$HONCHO_LABEL_COLOR")"}
-  text=${text//"${mark}S"/"$(color_escape "$HONCHO_SYNCED_COLOR")"}
-  text=${text//"${mark}A"/"$(color_escape "$HONCHO_ACTIVE_COLOR")"}
-  printf '%s' "$text"
-}
-
-# Honcho memory segment. Omitted when the renderer or python3 is missing,
-# or when "statusline" is "off" in ~/.honcho/config.json.
-HONCHO_STATUSLINE="$HOME/.honcho/honcho-statusline.sh"
-if [ -f "$HONCHO_STATUSLINE" ] && command -v python3 >/dev/null 2>&1; then
-  honcho_text=$(printf '%s' "$input" | bash "$HONCHO_STATUSLINE" 2>/dev/null)
-  [ -n "$honcho_text" ] && printf '%s%s' "$separator" "$(recolor_honcho "$honcho_text")"
 fi
 
 printf '\n'

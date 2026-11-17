@@ -16,10 +16,10 @@ This skill defines a new project with the user, then creates its board and write
 - Do not create the board until the user agrees to the charter. A board with no charter gives later skills nothing to work from.
 ### Tracker and tool names
  
-Use Skuld unless the user names a different tracker. If the user names a different tracker, use its connected MCP tools. If the tracker has no connected tools, tell the user and stop.
+Use Skuld unless the user names a different tracker. If the user names a different tracker, use its connected MCP tools. If the tracker has no connected tools, ask the user where they want the project to exist. Stop and wait for further instruction.
  
-This file names one Skuld tool: `list_boards`. For other actions, use the Skuld tool that does that action. These actions are: create a board and write the charter. If no tool does the action, tell the user. Then give them the text to enter by hand.
- 
+This file names one Skuld tool: `list_boards`. For other actions, use the Skuld tool that does that action. If no tool does the action, tell the user. Then give them the text to enter by hand.
+
 ## Step 1: Check for a board
  
 1. Call `list_boards`.

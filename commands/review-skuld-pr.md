@@ -2,6 +2,7 @@
 name: review-skuld-pr
 description: Review a pull request against its Skuld card's acceptance criteria
 effort: xhigh
+disable-model-invocation: true
 ---
 
 Usage: /review-skuld-pr <pr_url> <card_name>

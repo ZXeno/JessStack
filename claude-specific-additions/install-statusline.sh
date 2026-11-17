@@ -67,7 +67,7 @@ fi
 # ---- Set the statusLine entry -----------------------------------------------
 if ! command -v python3 >/dev/null 2>&1; then
   echo "settings.json: python3 not found. Add this entry to $settings_file:" >&2
-  printf '  "statusLine": {\n    "type": "command",\n    "command": "%s",\n    "refreshInterval": 1\n  }\n' \
+  printf '  "statusLine": {\n    "type": "command",\n    "command": "%s"\n  }\n' \
     "${statusline_command//\"/\\\"}" >&2
   exit 1
 fi
@@ -95,12 +95,10 @@ if current is not None and not same_command and not force:
     sys.exit(f"settings.json: statusLine runs a different command ({other}). "
              "No change made. Run again with --force to replace it.")
 
-# For the same command, keep the other fields, such as padding or a refreshInterval
-# that the user set. The refreshInterval of 1 second lets the Honcho glyph animate.
+# For the same command, keep the other fields that the user set, such as padding.
 wanted = dict(current) if same_command else {}
 wanted["type"] = "command"
 wanted["command"] = command
-wanted.setdefault("refreshInterval", 1)
 if wanted == current:
     print("settings.json: statusLine is up to date.")
     sys.exit(0)
@@ -117,8 +115,3 @@ if os.path.exists(path):
 os.replace(temp_path, path)
 print(f"settings.json: set statusLine in {path}.")
 PY
-
-if [ ! -f "$HOME/.honcho/honcho-statusline.sh" ]; then
-  echo "Honcho segment: ~/.honcho/honcho-statusline.sh not found. To show the segment," \
-    "install the Honcho plugin and run /honcho:setup."
-fi

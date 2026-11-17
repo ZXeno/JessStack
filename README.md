@@ -6,27 +6,38 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 - `rust-skills` - [leonardomso](https://github.com/leonardomso/rust-skills/tree/master)
 - `svelte-code-writer` - [sveltejs](https://github.com/sveltejs/ai-tools)
 - `svelte-core-bestpractices` - [sveltejs](https://github.com/sveltejs/ai-tools)
+- `frontend-design` - [Anthropic](https://github.com/anthropics/skills)
+- `skill-creator` - [Anthropic](https://github.com/anthropics/skills)
+- `grill` - [Matt Pocock](https://github.com/mattpocock/skills)
+- `handoff` - [Matt Pocock](https://github.com/mattpocock/skills)
 
 ## Contents
 
 | Directory | Contents |
 |---|---|
 | `skills/` | Agent skills. Each skill is a directory with a `SKILL.md` file. |
-| `commands/` | Slash commands. The frontmatter sets OpenCode fields (`agent`, `model`). |
-| `claude-specific/` | A Claude Code status line script and its installer. |
+| `commands/` | Slash commands, used to specify workflows and workflow rules. The frontmatter sets effort level. (`effort`). |
+| `rules/` | Rule files for `~/.claude/rules/`. |
+| `profile.CLAUDE.md` | Instructions for all projects. This file goes in `~/.claude/` with the name `CLAUDE.md`. |
+| `claude-specific-additions/` | A Claude Code status line script and its installer. |
 
 ### Skills
 
 | Skill | Use |
 |---|---|
+| `create-project` | Grill the user to define a new project, then create its board and charter in Skuld. |
+| `deep-research` | Research a topic across many sources with subagents, then write a report. |
+| `feature-spec-grill` | Grill the user on a Skuld card until the card has a story, settled decisions, and testable acceptance criteria. Then move the card to To Do. |
+| `frontend-design` | Give direction on the visual design of a new or changed user interface. |
 | `gitea-mcp` | Configure the Gitea MCP server and call its tools. |
 | `grill` | Interview the user relentlessly about a plan, decision, or idea until you reach a shared understanding. |
+| `handoff` | Write a handoff document from the current conversation for a different agent. |
 | `review-pr` | Review a Gitea pull request with one review pass and one filter pass. Post the comments through the Gitea MCP tools. |
 | `rune-mcp` | Configure the Rune MCP server, a Telegram bot over stdio, and call its tools. |
 | `rune-send-message` | Send a Telegram message or notification through the Rune MCP tools. |
 | `rust-skills` | Rust coding guidelines. 265 rules in 26 categories. |
 | `rust-unit-testing` | Write and organize Rust unit tests. |
-| `skuld-mcp` | Manage Skuld boards, cards, tasks, and charters through the Skuld MCP tools. |
+| `skill-creator` | Create skills, change skills, and measure how well a skill works. |
 | `svelte-code-writer` | Look up Svelte 5 documentation and analyze Svelte code from the command line. |
 | `svelte-core-bestpractices` | Write and analyze Svelte components and modules. |
 | `technical-debt-detection` | Find and report technical debt in a codebase. |
@@ -36,19 +47,53 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 
 | Command | Use |
 |---|---|
+| `complete-skuld-pr` | Complete the last pull request in the session and move its Skuld card to Done. |
+| `impl-skuld-card` | Implement one Skuld card. Plan, code, test, open a pull request, and send a notification. |
 | `impl-work-plan` | Begin implementation of a work plan from a plan file. Save and open an implementation report when done. |
-| `implment-skuld-card` | Implement one Skuld card. Plan, code, test, open a pull request, and send a notification. |
 | `multi-card-implement` | Implement more than one Skuld card with the same steps. |
 | `plan-skuld-card-impl` | Create an implementation plan for a Skuld card. Grill on the acceptance criteria before planning. |
 | `resolve-pr-comments` | Resolve the comments on a Gitea pull request. Read the related Skuld card. |
 | `review-skuld-pr` | Review a pull request against the acceptance criteria of its Skuld card. |
 
+Refer to [`commands/README.md`](commands/README.md) for the arguments, the steps, and the install procedure of each command.
+
+## Profile and rules
+
+### `profile.CLAUDE.md`
+
+`profile.CLAUDE.md` holds the instructions that apply to all projects. The file is intended to exist in `~/.claude/` with the name `CLAUDE.md`. Claude Code loads `~/.claude/CLAUDE.md` in each session.
+
+Copy the file from the repo root:
+
+```bash
+cp profile.CLAUDE.md ~/.claude/CLAUDE.md
+```
+
+This command replaces a `~/.claude/CLAUDE.md` that exists. To keep the old file, copy it to a different name first.
+
+The profile tells the agent to apply the `unslop` skill. Install that skill with the profile.
+
+### Rules
+
+`rules/` holds rule files. Each file is intended to exist in `~/.claude/rules/`.
+
+| File | Use |
+|---|---|
+| `csharp_coding_style.md` | C# coding style. The `paths` field in the frontmatter limits the rule to `.cs`, `.razor`, and `.csproj` files. |
+
+Copy the files from the repo root:
+
+```bash
+mkdir -p ~/.claude/rules
+cp rules/*.md ~/.claude/rules/
+```
+
 ## Claude Code status line
 
-`claude-specific/statusline.sh` writes this line:
+`claude-specific-additions/statusline.sh` writes this line:
 
 ```
-<tokens> | Context: <pct>% | Session window: <pct>% | Weekly limit: <pct>% | Effort: <level> | <honcho>
+<tokens> | Context: <pct>% | Session window: <pct>% | Weekly limit: <pct>% | Effort: <level>
 ```
 
 | Segment | Value |
@@ -58,24 +103,23 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 | `Session window` | `rate_limits.five_hour.used_percentage`. The script shows `--` when Claude Code sends no value. |
 | `Weekly limit` | `rate_limits.seven_day.used_percentage`. The script shows `--` when Claude Code sends no value. |
 | `Effort` | `effort.level`. The script omits this segment when the model has no effort setting. |
-| `<honcho>` | The output of the Honcho memory renderer. Refer to [Honcho segment](#honcho-segment). |
 
 The percentages change color along a gradient: green at 0%, yellow at 50%, and red at 100%.
 
-The script uses bash, grep, sed, and tr. The Honcho segment also uses python3.
+The script uses bash, grep, sed, and tr.
 
 ### Install
 
 Run the installer from the repo root:
 
 ```bash
-./claude-specific/install-statusline.sh
+./claude-specific-additions/install-statusline.sh
 ```
 
 The installer does these steps:
 
 1. It copies `statusline.sh` to `~/.claude/statusline.sh`.
-2. It sets `statusLine` in `~/.claude/settings.json` to run that script, with `refreshInterval` set to `1`.
+2. It sets `statusLine` in `~/.claude/settings.json` to run that script.
 
 If you set `CLAUDE_CONFIG_DIR`, the installer uses that directory in place of `~/.claude`.
 
@@ -83,7 +127,7 @@ Before the installer replaces a file, it copies the old file to `<file>.bak-<tim
 
 If `statusLine` runs a different command, the installer makes no change to `settings.json` and exits with status 1. To replace that entry, run the installer with `--force`.
 
-If `statusLine` runs this script, the installer keeps the other fields of the entry, for example `padding`. It also keeps a `refreshInterval` that you set.
+If `statusLine` runs this script, the installer keeps the other fields of the entry, for example `padding`.
 
 The installer uses python3 to edit `settings.json`. If python3 is not available, the installer copies the script, prints the `statusLine` entry for you to add, and exits with status 1.
 
@@ -105,10 +149,6 @@ Set the colors in the `env` block of `settings.json`. Write each color as a `#RR
 | `STATUSLINE_PERCENT_COLOR_AT_0` | Percentage at 0% | `#08A357` |
 | `STATUSLINE_PERCENT_COLOR_AT_50` | Percentage at 50% | `#D8B400` |
 | `STATUSLINE_PERCENT_COLOR_AT_100` | Percentage at 100% | `#EA0000` |
-| `STATUSLINE_HONCHO_SYNCED_COLOR` | ◆ when Honcho has synced memory context | `#82C8E1` |
-| `STATUSLINE_HONCHO_UNSYNCED_COLOR` | ◇ when Honcho has no synced memory context | `#787880` |
-| `STATUSLINE_HONCHO_ACTIVE_COLOR` | Honcho glyph and status text during a memory operation | `#E6AF6E` |
-| `STATUSLINE_HONCHO_LABEL_COLOR` | `honcho` text and its `·` separator | `#787880` |
 
 Example:
 
@@ -116,32 +156,10 @@ Example:
 {
   "env": {
     "STATUSLINE_TOKEN_COUNT_COLOR": "#FF69B4",
-    "STATUSLINE_HONCHO_SYNCED_COLOR": "#08A357"
+    "STATUSLINE_PERCENT_COLOR_AT_0": "#08A357"
   }
 }
 ```
-
-### Honcho segment
-
-The `<honcho>` segment shows the state of the Honcho memory plugin for Claude Code. The script shows the segment only when all of these conditions are true:
-
-- `~/.honcho/honcho-statusline.sh` exists. The `/honcho:setup` command of the Honcho plugin installs this file.
-- python3 is available.
-- `statusline` is not `"off"` in `~/.honcho/config.json`.
-
-If a condition is false, the script omits the segment. The other segments do not change.
-
-| Glyph | State |
-|---|---|
-| ◇ | Honcho has no synced memory context. |
-| ◆ | Honcho has synced memory context. |
-| ◐ ◓ ◑ ◒ or ✦ ✧, with status text | Honcho loads, recalls, or queries memory. |
-
-With `refreshInterval` set to `1`, Claude Code runs the script every second. This lets the glyph move during a memory operation.
-
-The Honcho renderer sets fixed colors. The `recolor_honcho` function in `statusline.sh` replaces them with the `STATUSLINE_HONCHO_*` colors. If a Honcho update changes the renderer colors, the changed parts show the renderer colors until you update `recolor_honcho`.
-
-`/honcho:setup` writes over `~/.honcho/honcho-statusline.sh`. After a Honcho plugin update, run `/honcho:setup` again to get the new renderer.
 
 ## Tips for writing skills
 A few tips I've picked up along the way for writing useful skills:

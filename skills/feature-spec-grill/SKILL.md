@@ -10,23 +10,24 @@ This skill runs the /grill loop against a Skuld card. Skuld is a kanban board fo
 
 ## Rules
 
-- Get facts from Skuld, the charter, and the codebase. Ask the user only for decisions.
+- Get facts from Skuld, the charter, and the codebase.
 - If a Skuld tool returns 401, 403, or any "unauthorized" result, stop all work. Tell the user which call failed and give the error text. Do not try a different tool, account, or route. Only the user can fix access.
 - Do not bypass a security control for any reason.
 - Write each decision to the card when the user settles it. Then, if the session stops, the card keeps all settled work.
 - Change one card at a time. Do not keep decisions to write later with decisions for other cards. A batch write that fails can lose the work of a full session.
+- Do not write repository/project-wide rules into a card description, acceptance criteria, or comments. If a new rule is to be written, discuss it with the user and either write it to the project charter, a project rules document to be added to be uploaded to the board, or ask the user where they want the rule to reside.
 - If the Skuld MCP server is not connected, tell the user and stop.
 
 ### Skuld tool names
 
-This file names four Skuld tools: `list_boards`, `get_board`, `get_charter`, and `get_card`. For other actions, use the Skuld tool that does that action. These actions are: update a card, move a card, list or create categories, and set an assignee. If no Skuld tool does the action, tell the user. Then give them the text to enter by hand.
+This file names four Skuld tools: `list_boards`, `get_board`, `get_charter`, and `get_card`. For other actions, use the Skuld tool that does that action. If no Skuld tool does the action, tell the user. Then give them the text to enter by hand.
 
 ## Step 1: Find the board
 
 1. Call `list_boards`.
 2. Find the board for this project. Match on the name the user gave, then on the repository name. If more than one board can match, ask the user which one.
 3. If the board exists, call `get_board` and `get_charter`. If the board has no charter, tell the user. Ask if they want to continue without it. The charter holds the constraints, tech stack, and architecture that guide each recommendation.
-4. If no board exists, hand off to the /create-project skill and stop. If /create-project is not available, tell the user and stop.
+4. If no board exists, hand off to the /create-project skill and stop. If the /create-project skill is not available, tell the user and stop.
 
 ## Step 2: Read the card
 
@@ -91,6 +92,12 @@ Write to the card after each grill round, not at the end. Update these sections:
 - **Dependencies.** Cards and systems this card needs.
 - **Schema.** Data model or API contract changes, if any.
 
+## Step 8: Addressing Open Charter Questions
+
+If the result of the grill settles an open charter question, remove the open question from the charter. Tell the user that the grill resolved an open charter question.
+
+If the grill answers no open charter question, skip this step and say nothing.
+
 ### Card template
 
 ```markdown
@@ -147,8 +154,6 @@ Security flag format, at the top of the message:
 
 ```markdown
 **Security flag:** <Risk>. Recommended control: <control>.
-
------
 ```
 
 ### Example round

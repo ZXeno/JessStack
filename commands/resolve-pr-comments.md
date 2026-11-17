@@ -1,7 +1,8 @@
 ---
 name: resolve-pr-comments
 description: Resolve comments on a gitea pull request. References the related Skuld card.
-effort: xhigh
+effort: high
+disable-model-invocation: true
 ---
 
 Usage: /resolve-pr-comments <pr_url> <card_id>
