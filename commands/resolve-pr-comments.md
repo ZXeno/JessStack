@@ -1,34 +1,55 @@
 ---
 name: resolve-pr-comments
-description: Resolve comments on a gitea pull request. References the related Skuld card.
+description: Resolve the open comments on a Gitea pull request. Uses the related Skuld card.
 effort: high
 disable-model-invocation: true
 ---
 
-Usage: /resolve-pr-comments <pr_url> <card_id>
+Usage: `/resolve-pr-comments <pr_url> <card_id>`
 
-Arguments provided: $ARGUMENTS
+Arguments: `$ARGUMENTS`
 
-Parse the arguments above: the first token is the pull-request URL (`pr_url`), and the remainder is the Skuld card id (`card_id`).
+The first token is the pull request URL (`pr_url`). The remainder is the Skuld card ID (`card_id`).
 
-Always apply the `unslop` skill.
+Apply the `unslop` skill to all text that you write: commit messages, replies to review comments, and card comments.
 
-Using your Gitea MCP tools, read the open comments on the pr at `pr_url`.
+## 1. Read
 
-Validate each comment and create a detailed work plan.
+1. Read the open comments on `pr_url` with the Gitea MCP tools.
+2. Read the card `card_id` with the Skuld MCP tools. The card has the acceptance criteria.
+3. Check out the source branch of the pull request.
+4. Invoke the `code-writing-helper` skill. Follow it for each code change in this command.
+5. Load the skills for each language that the change touches.
+6. Read `agents.md` and the code that the comments refer to.
 
-Story documentation can be found in Skuld, card id containing the acceptance criteria is `card_id`.
+## 2. Plan
 
-Utilize available skills relevent to the language being worked on and adhere to the style guidelines and requirements in agents.md and in the card. 
+1. Validate each comment. If a comment is not clear, stop and `/grill` me.
+2. Write a work plan that addresses each valid comment.
+3. A review comment is a correction. For each comment that names an error that can occur again, propose a check as `code-writing-helper` says for corrections.
+4. Show me the work plan and each proposed check. Add each check that I approve to the plan.
 
-Follow the plan and ensure all review comments are addressed appropriately.
+## 3. Implement
 
-Reuse existing components everywhere possible. Use existing implementations for code everywhere possible. 
+1. Implement the plan. Follow `code-writing-helper`, `agents.md`, and the requirements on the card.
+2. Reuse an existing component or implementation when one fits the task. Copy only patterns that pass the workaround check in `code-writing-helper`. Record each workaround that you find with `file:line`.
+3. If the root-cause fix is larger than the comment, stop and `/grill` me. Give the cause, the size of the correct fix, and the workaround that you rejected.
 
-Validate implementations meet acceptance criteria and address all review comments after implementation. 
+## 4. Verify
 
-Keep all code comments to a **minimum**. No more than 2-3 sentences, no more than 5-10 words per sentence. Refrain from mentioning cards/stories in comments unless it is extremely relevant. The code should be easy enough to read that comments should be rare. If you can reduce existing code comments for code being changes to fit these criteria, do so.
+1. Verify the change as `code-writing-helper` says.
+2. Verification is complete when each valid comment and each acceptance criterion has evidence from a run. A clean build is not evidence.
+3. If a check fails and you cannot fix the cause, stop and `/grill` me. Do not push until the check passes or I approve.
 
-Once you've finished your work, commit your changes and push them up to the repository. Then comment on and resolve the open review comments. 
+## 5. Push and reply
 
-Once you've finished, notify me using the `rune-send-message` skill with the following message format `"I have resolve the comments left on pull request <pr_url>."` to notify me you have completed your work.
+1. Commit the changes and push them.
+2. Reply to each open comment. Say what you changed, or why you made no change. Then resolve the comment.
+3. Add a comment to the card with these sections:
+   - **Verification.** Each acceptance criterion and each valid review comment, with its evidence.
+   - **Findings.** Each workaround that you found, with `file:line`. Each `scan-added-lines.sh` finding that you kept, with the reason.
+4. Send me a notification with the `rune-send-message` skill. Use this text, and replace the `<pr_url>` placeholder:
+
+```
+I have resolved the comments left on pull request <pr_url>.
+```

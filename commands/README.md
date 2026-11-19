@@ -26,7 +26,8 @@ The commands call these MCP servers and skills. A command fails when one that it
 | Gitea | MCP server | `resolve-pr-comments`, `review-skuld-pr` |
 | Rune | MCP server | `impl-skuld-card`, `multi-card-implement`, `review-skuld-pr`, `resolve-pr-comments` |
 | `unslop` | Skill | All commands except `plan-skuld-card-impl` and `complete-skuld-pr` |
-| `grill` | Skill | `plan-skuld-card-impl`, `impl-work-plan`, `impl-skuld-card` |
+| `grill` | Skill | `plan-skuld-card-impl`, `impl-work-plan`, `impl-skuld-card`, `multi-card-implement`, `resolve-pr-comments` |
+| `code-writing-helper` | Skill | `impl-skuld-card`, `multi-card-implement`, `impl-work-plan`, `resolve-pr-comments` |
 | `handoff` | Skill | `plan-skuld-card-impl` |
 | `review-pr` | Skill | `review-skuld-pr` |
 | `rune-send-message` | Skill | `impl-skuld-card`, `multi-card-implement`, `review-skuld-pr`, `resolve-pr-comments` |
@@ -95,12 +96,12 @@ The command makes no changes to the repository.
 
 The command does these steps:
 
-1. It reads the plan and the work item ID in the plan.
-2. It implements the plan with no deviation. If a deviation is necessary, it stops and grills you.
-3. It writes unit tests and validates the changes against the acceptance criteria.
+1. It reads the plan and the work item ID in the plan, and invokes `code-writing-helper`.
+2. It implements the plan with no deviation. If a deviation is necessary, or if the root-cause fix is larger than the plan, it stops and grills you.
+3. It writes unit tests and verifies each acceptance criterion with evidence from a run.
 4. It saves a report as `<work_item_id>_implementation_report.md` in the directory of the plan, then opens the report.
 
-The report lists the changed files, the changed lines, and the tests for each acceptance criterion.
+The report lists the changed files, the changed lines, the evidence for each acceptance criterion, and the workarounds that the command found.
 
 The command has these limits:
 
@@ -119,16 +120,19 @@ The command has these limits:
 
 The command does these steps:
 
-1. It reads the card and moves the card to In Progress.
-2. It makes an implementation plan from the acceptance criteria. If something is not clear, it stops and grills you.
-3. It adds each item of the plan as a task on the card, and updates each task when the item is complete.
-4. It implements the plan and writes tests.
-5. It validates the implementation against the acceptance criteria.
-6. If the project has a Docker image or a Docker Compose file, it rebuilds and starts the local dev container.
-7. It updates `agents.md` with facts about the codebase only.
-8. It commits the changes and creates a pull request.
-9. It adds the pull request to the pull request field of the card, then moves the card to Code Review.
-10. It sends you a notification with the card name, the card ID, and the pull request URL.
+1. It reads the card. If the card has no acceptance criteria, it stops and tells you to run `/feature-spec-grill`.
+2. It moves the card to In Progress.
+3. It invokes `code-writing-helper` and makes an implementation plan from the acceptance criteria. If something is not clear, it stops and grills you.
+4. It adds each item of the plan as a task on the card, and updates each task when the item is complete.
+5. It creates a branch. The branch name has the format `{dev}/{iter}_{card_id}_{description}`. It leaves out `{iter}` when the card has no iteration.
+6. It implements the plan and writes tests. If the root-cause fix is larger than the card, it stops and grills you.
+7. If the project has a Docker image or a Docker Compose file, it rebuilds and starts the local dev container.
+8. It verifies each acceptance criterion with evidence from a run. If a check fails, it stops and grills you.
+9. It updates `agents.md` with facts about the codebase that no check can enforce.
+10. It commits the changes and creates a pull request.
+11. It adds a comment to the card with the verification evidence and the workarounds that it found.
+12. It adds the pull request to the pull request field of the card, then moves the card to Code Review.
+13. It sends you a notification with the card name, the card ID, and the pull request URL.
 
 ### `multi-card-implement`
 
@@ -143,9 +147,9 @@ The command does these steps:
 
 The command does the same steps as `impl-skuld-card` for each card, with these differences:
 
-- It creates one pull request for all the cards. The description lists the title and the ID of each card.
+- It creates one branch and one pull request for all the cards. The branch name has the format `{dev}/{iter}_{description}`, with no card ID. The description lists the title and the ID of each card.
+- It adds a verification comment to each card.
 - It sends one notification that lists each card and the pull request URL.
-- It updates `agents.md` with the relevant changes. The limit to facts about the codebase is not in this command.
 
 ### `review-skuld-pr`
 
@@ -177,13 +181,15 @@ The command does these steps:
 
 The command does these steps:
 
-1. It reads the open comments on the pull request.
-2. It validates each comment and makes a work plan.
-3. It makes the changes.
-4. It validates the changes against the acceptance criteria and the comments.
-5. It commits and pushes the changes.
-6. It replies to each open comment and resolves it.
-7. It sends you a notification with the pull request URL.
+1. It reads the open comments on the pull request and the card, and checks out the branch of the pull request.
+2. It invokes `code-writing-helper`, validates each comment, and makes a work plan. If a comment is not clear, it stops and grills you.
+3. For each comment that names an error that can occur again, it proposes a check, for example a lint rule. It shows you the plan and the checks, and adds only the checks that you approve.
+4. It makes the changes.
+5. It verifies the changes against the acceptance criteria and the comments.
+6. It commits and pushes the changes.
+7. It replies to each open comment and resolves it.
+8. It adds a comment to the card with the verification evidence and the workarounds that it found.
+9. It sends you a notification with the pull request URL.
 
 ### `complete-skuld-pr`
 

@@ -25,6 +25,7 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 
 | Skill | Use |
 |---|---|
+| `code-writing-helper` | Write code that is safe for the next agent to copy. Fix root causes, keep comments few, verify each change with a run, and turn each correction into a deterministic check. |
 | `create-project` | Grill the user to define a new project, then create its board and charter in Skuld. |
 | `deep-research` | Research a topic across many sources with subagents, then write a report. |
 | `feature-spec-grill` | Grill the user on a Skuld card until the card has a story, settled decisions, and testable acceptance criteria. Then move the card to To Do. |
@@ -61,7 +62,7 @@ Refer to [`commands/README.md`](commands/README.md) for the arguments, the steps
 
 ### `profile.CLAUDE.md`
 
-`profile.CLAUDE.md` holds the instructions that apply to all projects. The file is intended to exist in `~/.claude/` with the name `CLAUDE.md`. Claude Code loads `~/.claude/CLAUDE.md` in each session.
+`profile.CLAUDE.md` holds the instructions that apply to all projects. The file is intended to exist in `~/.claude/` with the name `CLAUDE.md`.
 
 Copy the file from the repo root:
 
@@ -167,7 +168,9 @@ A few tips I've picked up along the way for writing useful skills:
 - Keep it lean, don't write fluff. Extraneous sentences and comments become commands for the LLM.
 - Be clear, explicit, and direct with what the agent needs to do.
 - Write instructions, not essays.
-- Keep skill files under 500 lines
+- Keep skill files under 400 lines, less than 200 lines is ideal.
+- Don't make prose that which you can script or reference.
+- Keep scripts and reference files in the `skill-name/resources/` directory.
 - Tell the agent what to achieve.
 - Provide constraints, not procedures.
 - Don't skip negative cases. (i.e. Think about when a skill should **NOT** fire.

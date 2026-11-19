@@ -1,40 +1,88 @@
 ---
 name: multi-card-implement
-description: Implement multiple Skuld cards plan end-to-end (plan, code, test, PR, notify)
+description: Implement more than one Skuld card in one pull request (plan, code, test, PR, notify)
 effort: high
 disable-model-invocation: true
 ---
 
-Usage: /multi-card-implement <board_name> <additional_instructions>
+Usage: `/multi-card-implement <board_name> [instructions]`
 
-Arguments provided: $ARGUMENTS
+Arguments: `$ARGUMENTS`
 
-Parse the arguments above: the first token is the name of the Skuld board to get cards from. The remainder is additional instructions for this command. If there are multiple guids, then the additional instructions should include a list of card ids. 
+The first token is the name of the Skuld board (`board_name`). The remainder is optional instructions (`instructions`). The instructions can contain a column name, a list of card IDs, or other instructions.
 
-Using your Skuld MCP tools, get the board provided in `board_name`. If the `additional_instructions` value is provided, read and consider its contents. If `additional_instrucstions` is a list of guids, attempt to retrieve each as a card ID.
+Apply the `unslop` skill to all text that you write: card tasks, card comments, commit messages, and the pull request description.
 
-If no `additional_instructions` value is provided, or the `additional_instructions` does not include a column name or id, then use the board's "To Do" column as the source of the cards.
+## 1. Read the cards
 
-Move each card to the "In Progress" column in Skuld.
+1. Get the board `board_name` with the Skuld MCP tools.
+2. Select the cards:
+   - If `instructions` has card IDs, get each card by its ID.
+   - If `instructions` has a column name or a column ID, use the cards in that column.
+   - If not, use the cards in the "To Do" column.
+3. If a card has no acceptance criteria, stop. Tell me to run `/feature-spec-grill` on that card.
+4. Move each card to the "In Progress" column.
 
-Always apply the `unslop` skill.
+## 2. Plan
 
-Create a detailed work plan for each card. For the items in your TODO list, add them to the "Tasks" on the related card in Skuld.
+1. Invoke the `code-writing-helper` skill. Follow it for each code change in this command.
+2. Load the skills for each language that the change touches.
+3. Read `agents.md` and the code that the change touches.
+4. Write an implementation plan for each card. Map each acceptance criterion to one or more plan items, and to the evidence that will prove it: a test name, a command and its expected output, or a screenshot.
+5. If an acceptance criterion or a plan item is not clear, stop and `/grill` me until we agree.
+6. Add each plan item as a task on its card. When you complete an item, mark its task complete.
 
-Begin implementation work according to the acceptance criteria for each card. Each time you complete an item on your todo list, update the same task on the card in Skuld. Update your todo items as you complete them.
+## 3. Implement
 
-Utilize available skills relevent to the language being worked on and adhere to the style guidelines and requirements in agents.md and in the card. Follow the plan and ensure all acceptance criteria are met. Reuse existing components everywhere possible. Use existing implementations for code everywhere possible. Frontend code should be testable by the user once a pull request is created. Validate all implementations meet acceptance criteria after implementation. 
+1. Create one branch from the default branch for all the cards. Use the format in "Branch name".
+2. Implement the plans. Follow `code-writing-helper`, `agents.md`, and the requirements on each card.
+3. Reuse an existing component or implementation when one fits the task. Copy only patterns that pass the workaround check in `code-writing-helper`. Record each workaround that you find with `file:line`.
+4. If the root-cause fix is larger than the card, stop and `/grill` me. Give the cause, the size of the correct fix, and the workaround that you rejected.
 
-Tests are required for all work.
+## 4. Verify
 
-Keep all code comments to a **minimum**. No more than 2-3 sentences, no more than 5-10 words per sentence. Refrain from mentioning cards/stories in comments unless it is extremely relevant. The code should be easy enough to read that comments should be rare. If you can reduce existing code comments for code being changed to fit these criteria, do so. Follow best practices where possible for implemented code. Stability, reliability, maintainability are key concerns.
+1. If the project has a Dockerfile or a Docker Compose file, remove the local dev container, rebuild it, and start it. Send a request to it and confirm that it responds.
+2. Verify the change as `code-writing-helper` says. If a dev container exists, run the code against it.
+3. Verification is complete when each acceptance criterion of each card has evidence from a run. A clean build is not evidence.
+4. For a frontend change, write the steps that I use to test the change by hand.
+5. If a check fails and you cannot fix the cause, stop and `/grill` me. Do not create the pull request until the check passes or I approve.
 
-If the project has a docker image/docker compose file, ensure that the local dev container is removed, rebuilt, updated, running, and reachable once you've completed implementation.
+## 5. Record facts
 
-Only update the `agents.md` file with facts about the codebase. Do not mention story or card ids/names.
+Add a fact to `agents.md` only when a future agent needs it and no check can enforce it. Write facts about the codebase only. Do not name cards or stories.
 
-Once you are finished with your work, commit your changes, create a pull request, include the pull request in the appropriate field on the card, then move the card in Skuld to the "Code Review" column.
+## 6. Pull request
 
-Include in your pull request description a list of each card title and full card id. make your pull request descriptions terse but descriptive. Always apply the `unslop` skill to your descriptions.
+1. Commit the changes.
+2. Create one pull request. Write a terse description with these parts:
+   - A list of the title and the full ID of each card.
+   - What the change does.
+   - The manual test steps, for a frontend change.
+3. Add a comment to each card with these sections:
+   - **Verification.** Each acceptance criterion of the card and its evidence.
+   - **Findings.** Each workaround that you found for the card, with `file:line`. Each `scan-added-lines.sh` finding that you kept for the card, with the reason.
+4. Add the pull request to the pull request field on each card.
+5. Move each card to the "Code Review" column.
+6. Send me a notification with the `rune-send-message` skill. Use this text, with one list line for each card. Replace each `<...>` placeholder:
 
-Create a bulleted list of each card title and id separated by ` | ` , enclosed in backticks as <`[card_id]` | `[card_title]`> with the url on a separate line after the list, with the singular message separated by a blank line after: "Work is completed on the above cards. PR URL: `pr_url`". Notify me using the `rune-send-message` skill with the message you created with the prior instruction.
+```
+- `<card_id>` | `<card_title>`
+- `<card_id>` | `<card_title>`
+
+Work is completed on the above cards. PR URL: <pr_url>
+```
+
+## Branch name
+
+Format: `{dev}/{iter}_{description}`
+
+| Part | Value |
+|---|---|
+| `{dev}` | My Gitea username. |
+| `{iter}` | The name of the iteration of the cards. If the cards have no iteration, or have more than one iteration, leave out `{iter}` and the underscore after it. |
+| `{description}` | A summary of the change in 1 to 5 lowercase words, joined by hyphens. |
+
+Examples:
+
+- `jane/0.2.2_project-rule-checks`
+- `jane/project-rule-checks`, for cards with no shared iteration.
