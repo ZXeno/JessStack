@@ -20,7 +20,7 @@ A lower layer is a fallback for a higher layer. A comment that says "do not call
 
 ## Before you write
 
-- Find the project's check commands: format, lint, type check, test, build, run. Look in the manifest (`package.json`, `Cargo.toml`, `*.csproj`, `pyproject.toml`), the `Makefile` or `justfile`, the CI configuration, and the `scripts/` directory. If the project has a verification script, use it.
+- Find the project's check commands: format, lint, type check, test, build, run. Look in the manifest (`package.json`, `Cargo.toml`, `*.csproj`, `pyproject.toml`), the `Makefile` or `justfile`, and the `scripts/` directory. If the project has a verification script, use it.
 - Read the code near your change to learn its conventions. Examine each pattern before you copy it. A pattern is a **workaround** when it hides a clash in place of a fix. Workaround signs:
   - a timer, sleep, or retry that waits for a different part of the system,
   - a cast or `any` that silences the type checker,
@@ -49,9 +49,8 @@ The work is done when each changed behavior has evidence from a run. A clean com
    - Server: send a request to the endpoint.
    - UI: open it and operate it with browser automation or the DevTools protocol. Take a screenshot. If a `run` skill is available, use it.
    - Library: call it from a test or a temporary script.
-4. Run `scripts/scan-added-lines.sh` from this skill's directory in the repository root. It lists each added line that has a suppression, a timer or sleep, a discarded error, a type escape, a deferred-work marker, or a comment. Remove each finding that this skill does not permit. Tell the user about each finding that you keep, and why.
-5. If you run the same set of commands more than one time, propose a script in the repository for them.
-6. Report: the commands you ran, their results, and the evidence (an output excerpt or a screenshot path). Report failures with their output. Name each step that you did not do, and why.
+4. If you run the same set of commands more than one time, propose a script in the repository for them.
+5. Report: the commands you ran, their results, and the evidence (an output excerpt or a screenshot path). Report failures with their output. Name each step that you did not do, and why.
 
 ## When the user corrects you
 

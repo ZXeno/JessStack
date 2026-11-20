@@ -27,7 +27,7 @@ The commands call these MCP servers and skills. A command fails when one that it
 | Rune | MCP server | `impl-skuld-card`, `multi-card-implement`, `review-skuld-pr`, `resolve-pr-comments` |
 | `unslop` | Skill | All commands except `plan-skuld-card-impl` and `complete-skuld-pr` |
 | `grill` | Skill | `plan-skuld-card-impl`, `impl-work-plan`, `impl-skuld-card`, `multi-card-implement`, `resolve-pr-comments` |
-| `code-writing-helper` | Skill | `impl-skuld-card`, `multi-card-implement`, `impl-work-plan`, `resolve-pr-comments` |
+| `code-writing-helper` | Skill | `impl-skuld-card`, `multi-card-implement`, `impl-work-plan`, `resolve-pr-comments`, `review-skuld-pr` |
 | `handoff` | Skill | `plan-skuld-card-impl` |
 | `review-pr` | Skill | `review-skuld-pr` |
 | `rune-send-message` | Skill | `impl-skuld-card`, `multi-card-implement`, `review-skuld-pr`, `resolve-pr-comments` |
@@ -164,9 +164,10 @@ The command does the same steps as `impl-skuld-card` for each card, with these d
 
 The command does these steps:
 
-1. It reads the card and its acceptance criteria.
-2. It reviews the pull request with the `review-pr` skill. If the description names more than one card, it does one review for each card.
-3. It sends you a notification when the review is complete.
+1. It reads the pull request, each card, and the comments on each card. If it finds no card ID, it stops and tells you to give one.
+2. It invokes `code-writing-helper`. If the repository is in the current directory with a clean working tree, it checks out the pull request branch and runs `scan-added-lines.sh`.
+3. It reviews the pull request with the `review-pr` skill. The criteria include the acceptance criteria, the `code-writing-helper` rules, and the Verification and Findings comments on the card. If the description names more than one card, it does one review for each card.
+4. It sends you a notification when the review is complete.
 
 ### `resolve-pr-comments`
 

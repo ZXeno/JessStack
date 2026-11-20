@@ -11,7 +11,7 @@ Apply the `unslop` skill to all text that you write: card tasks, card comments, 
 
 ## 1. Read the card
 
-1. Read the card with the Skuld MCP tools.
+1. Read the card with the Skuld MCP tools, including the description, acceptance criteria field, and comments.
 2. If the card has no acceptance criteria, stop. Tell me to run `/feature-spec-grill` on the card.
 3. Move the card to the "In Progress" column.
 
