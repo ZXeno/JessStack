@@ -14,7 +14,7 @@ Format a round like so:
 
 ❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs>
 
-  <letter-ordered list of suggestions>
+  <letter-ordered list of suggestions, one per line>
 
 ➡️ <your recommended answer>
 
@@ -22,7 +22,7 @@ Format a round like so:
 
 ❓ **Q2** - **<question title>**: <question body, might be multiple paragraphs>
 
-  <letter-ordered list of suggestions>
+  <letter-ordered list of suggestions, one per line>
 
 ➡️ <your recommended answer>
 
