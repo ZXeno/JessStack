@@ -1,11 +1,11 @@
 ---
 name: review-pr
-description: Use when reviewing a pull request given a Gitea PR URL. Runs one reviewer pass and one follow-up filter pass, then posts comments via Gitea MCP tools.
+description: Use when reviewing a pull request given its URL, on any Git hosting service. Runs one reviewer pass and one follow-up filter pass, then posts comments to the pull request.
 ---
 
 ## Overview
 
-Two-pass review for a Gitea pull request. Pass 1 reviews the diff and finds issues. Pass 2 filters those issues down to only the ones worth posting. Built for small session/token budgets. Additional information may be provided such as a reference to a story.
+Two-pass review for a pull request. Pass 1 reviews the diff and finds issues. Pass 2 filters those issues down to only the ones worth posting. Built for small session/token budgets. Additional information may be provided such as a reference to a story.
 
 **Core principle:** Post only high-confidence, issues. Target Critical and High severity comments per PR.
 
@@ -19,12 +19,25 @@ Two-pass review for a Gitea pull request. Pass 1 reviews the diff and finds issu
 - Trivial PRs (typo fixes, dependency bumps, package-version bumps, one-line config changes)
 
 ## Workflow
-### Step 1: Load the PR via Gitea MCP
+### Step 1: Load the PR
 
-Use the Gitea MCP tools to:
+Find the hosting service from the PR URL. Use the tools for that service in this order:
+1. An MCP server for the service (for example Gitea, GitHub, or GitLab).
+2. The CLI for the service (for example `tea`, `gh`, or `glab`).
+
+With those tools:
 - Fetch the PR from the given URL (title, description, linked issues)
 - Fetch the diff / changed files
 - Note the repo and file languages involved
+
+If no tool for the service is available and the repository is in the current directory, ask the user for the base and head branch names. Then get the diff with git:
+
+```bash
+git fetch origin <base> <head>
+git diff origin/<base>...origin/<head>
+```
+
+If the service returns a 401, a 403, or another "unauthorized" error, stop. Tell the user. Do not try a different tool.
 
 ### Step 2: Check for relevant skills
 
@@ -52,9 +65,9 @@ Re-read findings from Step 3 as if you were a second, skeptical reviewer. Valida
 - Not verifiable
 Keep only high-confidence issues. If nothing survives, say the PR looks fine — don't invent filler comments, do not leave compliments.
 
-### Step 5: Post comments via Gitea MCP
+### Step 5: Post comments
 
-For each surviving issue, use the Gitea MCP tools to leave a PR comment at the relevant file/line. Comment format:
+For each surviving issue, use the tool from Step 1 to leave a PR comment at the relevant file/line. If no tool can post to the service, give the comments to the user. Comment format:
 
 ```
 **[category] priority: X, confidence: Y**
@@ -73,5 +86,5 @@ If no issues survived, post a single summary comment stating the PR looks good, 
 | Follow-up pass | Same/second agent, filters to high-confidence |
 | Target output | 1-3 comments per PR |
 | Skills | Check for a skill matching the code's language/framework before reviewing |
-| Delivery | Post directly to the PR via Gitea MCP tools |
+| Delivery | Post to the PR with the service's MCP server or CLI. If neither can post, give the comments to the user |
 

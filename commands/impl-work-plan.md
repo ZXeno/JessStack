@@ -39,7 +39,7 @@ Apply the `unslop` skill to the implementation report.
 1. Write the report to `<work_item_id>_implementation_report.md` in the directory of the plan. Include these sections:
    - **Changes.** Each changed file and its changed lines.
    - **Verification.** Each acceptance criterion, its tests, and its evidence.
-   - **Findings.** Each workaround that you found, with `file:line`. Each `scan-added-lines.sh` finding that you kept, with the reason.
+   - **Findings.** Each workaround that you found, with `file:line`.
 2. Open the report in the default program for markdown files.
 
 ## Limits

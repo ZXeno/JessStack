@@ -1,19 +1,19 @@
 ---
 name: feature-spec-grill
-description: Grill the user on a work item in the tracker until the work item has a clear story, settled decisions, and testable acceptance criteria, then move it to To Do. Use whenever the user names a work item, work item ID, or tracker project and wants to spec, refine, groom, flesh out, or grill a feature, even if they do not say "grill" or "spec". GLOSSARY.md defines the tracker and the work item name.
+description: Grill the user on a work item in the tracker until the work item has a clear story, settled decisions, and testable acceptance criteria, then move it to To Do. Use whenever the user names a work item, work item ID, or tracker project and wants to spec, refine, groom, flesh out, or grill a feature, even if they do not say "grill" or "spec". The JessStack glossary in CLAUDE.md defines the tracker and the work item name.
 ---
 
 # Feature spec grill
 
-This skill runs the /grill loop against one work item in the tracker. GLOSSARY.md defines the `tracker` and the `work item name`. Use the work item name from GLOSSARY.md when you talk to the user. The result is a work item that a developer can build from without more questions, in the To Do state.
+This skill runs the /grill loop against one work item in the tracker. The JessStack glossary in CLAUDE.md defines the `tracker` and the `work item name`. Use the work item name from the JessStack glossary when you talk to the user. The result is a work item that a developer can build from without more questions, in the To Do state.
 
 A tracker project is the board, repository, or project in the tracker that holds the work items for this project.
 
 ## Rules
 
 - Get facts from the tracker, the charter, and the codebase.
-- Use the tools in the "Tracker MCP tools" table of GLOSSARY.md. For an action that the table does not list, use the tracker tool that does that action. If no tracker tool does the action, tell the user. Then give them the text to enter by hand.
-- If GLOSSARY.md names no tracker, tell the user to run /setup-jessstack and stop.
+- Use the tools in the "Tracker MCP tools" table of the JessStack glossary. For an action that the table does not list, use the tracker tool that does that action. If no tracker tool does the action, tell the user. Then give them the text to enter by hand.
+- If the JessStack glossary names no tracker, tell the user to run /setup-jessstack and stop.
 - If no tool for the tracker is available, tell the user and stop.
 - If a tracker tool returns 401, 403, or any "unauthorized" result, stop all work. Tell the user which call failed and give the error text. Do not try a different tool, account, or route. Only the user can fix access.
 - Do not bypass a security control for any reason.

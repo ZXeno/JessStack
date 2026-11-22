@@ -1,0 +1,14 @@
+{
+  "name": "jessstack",
+  "description": "Marketplace for the JessStack plugin.",
+  "owner": {
+    "name": "JessStack"
+  },
+  "plugins": [
+    {
+      "name": "jessstack",
+      "source": "./",
+      "description": "JessStack skills, agents, and commands, with the third-party skills that JessStack uses."
+    }
+  ]
+}

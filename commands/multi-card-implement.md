@@ -60,7 +60,7 @@ Add a fact to `agents.md` only when a future agent needs it and no check can enf
    - The manual test steps, for a frontend change.
 3. Add a comment to each card with these sections:
    - **Verification.** Each acceptance criterion of the card and its evidence.
-   - **Findings.** Each workaround that you found for the card, with `file:line`. Each `scan-added-lines.sh` finding that you kept for the card, with the reason.
+   - **Findings.** Each workaround that you found for the card, with `file:line`.
 4. Add the pull request to the pull request field on each card.
 5. Move each card to the "Code Review" column.
 6. Send me a notification with the `rune-send-message` skill. Use this text, with one list line for each card. Replace each `<...>` placeholder:
@@ -78,7 +78,7 @@ Format: `{dev}/{iter}_{description}`
 
 | Part | Value |
 |---|---|
-| `{dev}` | My Gitea username. |
+| `{dev}` | My username on the hosting service of the repository. |
 | `{iter}` | The name of the iteration of the cards. If the cards have no iteration, or have more than one iteration, leave out `{iter}` and the underscore after it. |
 | `{description}` | A summary of the change in 1 to 5 lowercase words, joined by hyphens. |
 

@@ -1,4 +1,4 @@
-# JessStack Skills
+# Added by JessStack
 
 Collection of skills, commands, agents, rules, and agent-rules for agents.
 

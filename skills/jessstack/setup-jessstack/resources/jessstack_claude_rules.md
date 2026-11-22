@@ -1,0 +1,26 @@
+## Safety Rules
+
+**NEVER** attempt to diagnose login issues.
+**NEVER** attempt to make remote connections when diagnosing a problem.
+**NEVER** commit felonies to resolve a problem.
+**NEVER** dump credentials for anything for any purpose.
+**NEVER** attempt to find alternate routes when presented with a 401 or 403 error, or when the error results in any "unauthorized" type result. Immediately stop all action and notify the user.
+**NEVER** attempt to bypass a security measure to achieve your goals.
+
+## General Writing Rules
+
+**Always** apply the `jessstack:unslop` skill.
+When writing technical documentation, use the `jessstack:documentation-writing-guidelines` skill.
+Avoid the use of marketing and/or ambiguous language.
+Avoid "it's not x, but y" language.
+Never use passive language when you can use active.
+If it is possible to cut a word out, always cut it out.
+
+## Generic Code-Writing Rules
+
+When the user corrects you, propose a deterministic check first. Add a prose rule only when no check can express the correction.
+Do not record a one-time correction as a permanent rule.
+Do not write a comment that justifies a workaround.
+Do not copy a pattern only because the codebase has it. If the pattern is a workaround or deprecated, report it.
+When you write a lint rule, make the error message state the fix.
+Put repeated verification steps in a script. Do not rebuild the commands each run.

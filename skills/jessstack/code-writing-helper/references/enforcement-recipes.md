@@ -175,6 +175,3 @@ source_modules = ["app.domain"]
 forbidden_modules = ["app.infrastructure"]
 ```
 
-## Fallback: a test that reads the source tree
-
-If no linter can express the rule, write a test that reads the source files and fails on the pattern. The assertion message states the fix. Keep an explicit allowlist of the old violations in the test, and remove entries as the cleanup proceeds. This works in each language and runs with the normal test command.

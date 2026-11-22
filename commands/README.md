@@ -4,17 +4,11 @@ Slash commands for work on Skuld cards. Each command is one markdown file. The f
 
 ## Install
 
-Copy the command files to the commands directory of your Claude Code configuration. Run this from the repo root:
+The `jessstack` plugin installs the commands. Refer to the install section of the [root README](../README.md#install).
 
-```bash
-for file in commands/*.md; do
-  [ "$(basename "$file")" = "README.md" ] || cp "$file" ~/.claude/commands/
-done
-```
+The plugin adds the prefix `jessstack:` to each command name. For example, run `plan-skuld-card-impl` as `/jessstack:plan-skuld-card-impl`.
 
-Do not copy this `README.md`. Claude Code reads each markdown file in that directory as a command.
-
-The copy in `~/.claude/commands/` does not follow changes in this repository. Copy the files again after you change a command.
+The manifest `.claude-plugin/plugin.json` lists each command file. Add a new command file to that list, or the plugin does not load it. The list leaves out this `README.md`.
 
 ## Requirements
 
@@ -23,7 +17,7 @@ The commands call these MCP servers and skills. A command fails when one that it
 | Requirement | Type | Used by |
 |---|---|---|
 | Skuld | MCP server | All commands except `impl-work-plan` |
-| Gitea | MCP server | `resolve-pr-comments`, `review-skuld-pr` |
+| Tools for the hosting service of the repository, for example Gitea, GitHub, or GitLab | MCP server or CLI | `resolve-pr-comments`, `review-skuld-pr` |
 | Rune | MCP server | `impl-skuld-card`, `multi-card-implement`, `review-skuld-pr`, `resolve-pr-comments` |
 | `unslop` | Skill | All commands except `plan-skuld-card-impl` and `complete-skuld-pr` |
 | `grill` | Skill | `plan-skuld-card-impl`, `impl-work-plan`, `impl-skuld-card`, `multi-card-implement`, `resolve-pr-comments` |
@@ -31,6 +25,8 @@ The commands call these MCP servers and skills. A command fails when one that it
 | `handoff` | Skill | `plan-skuld-card-impl` |
 | `review-pr` | Skill | `review-skuld-pr` |
 | `rune-send-message` | Skill | `impl-skuld-card`, `multi-card-implement`, `review-skuld-pr`, `resolve-pr-comments` |
+
+This repo does not hold the Rune MCP server or the `rune-send-message` skill. Install them before you run a command that sends a notification.
 
 `impl-skuld-card` and `multi-card-implement` create a pull request. `complete-skuld-pr` completes a pull request. The command files do not name the tool for these steps.
 
@@ -64,7 +60,7 @@ The commands follow a card across the columns of a Skuld board.
 ### `plan-skuld-card-impl`
 
 ```
-/plan-skuld-card-impl <card_id> [repositories] [instructions]
+/jessstack:plan-skuld-card-impl <card_id> [repositories] [instructions]
 ```
 
 | Argument | Required | Value |
@@ -87,7 +83,7 @@ The command makes no changes to the repository.
 ### `impl-work-plan`
 
 ```
-/impl-work-plan <plan_path>
+/jessstack:impl-work-plan <plan_path>
 ```
 
 | Argument | Required | Value |
@@ -111,7 +107,7 @@ The command has these limits:
 ### `impl-skuld-card`
 
 ```
-/impl-skuld-card <card_id>
+/jessstack:impl-skuld-card <card_id>
 ```
 
 | Argument | Required | Value |
@@ -137,7 +133,7 @@ The command does these steps:
 ### `multi-card-implement`
 
 ```
-/multi-card-implement <board_name> [instructions]
+/jessstack:multi-card-implement <board_name> [instructions]
 ```
 
 | Argument | Required | Value |
@@ -154,30 +150,29 @@ The command does the same steps as `impl-skuld-card` for each card, with these d
 ### `review-skuld-pr`
 
 ```
-/review-skuld-pr <pr_url> [card_id]
+/jessstack:review-skuld-pr <pr_url> [card_id]
 ```
 
 | Argument | Required | Value |
 |---|---|---|
-| `pr_url` | Yes | The URL of a Gitea pull request. |
+| `pr_url` | Yes | The URL of a pull request on any Git hosting service. |
 | `card_id` | No | A Skuld card ID. Without this argument, the command reads the card ID from the pull request description. |
 
 The command does these steps:
 
 1. It reads the pull request, each card, and the comments on each card. If it finds no card ID, it stops and tells you to give one.
-2. It invokes `code-writing-helper`. If the repository is in the current directory with a clean working tree, it checks out the pull request branch and runs `scan-added-lines.sh`.
-3. It reviews the pull request with the `review-pr` skill. The criteria include the acceptance criteria, the `code-writing-helper` rules, and the Verification and Findings comments on the card. If the description names more than one card, it does one review for each card.
-4. It sends you a notification when the review is complete.
+2. It reviews the pull request with the `review-pr` skill. The criteria include the acceptance criteria, the `code-writing-helper` rules, and the Verification and Findings comments on the card. If the description names more than one card, it does one review for each card.
+3. It sends you a notification when the review is complete.
 
 ### `resolve-pr-comments`
 
 ```
-/resolve-pr-comments <pr_url> <card_id>
+/jessstack:resolve-pr-comments <pr_url> <card_id>
 ```
 
 | Argument | Required | Value |
 |---|---|---|
-| `pr_url` | Yes | The URL of a Gitea pull request. |
+| `pr_url` | Yes | The URL of a pull request on any Git hosting service. |
 | `card_id` | Yes | The ID of the Skuld card that has the acceptance criteria. |
 
 The command does these steps:
@@ -195,7 +190,7 @@ The command does these steps:
 ### `complete-skuld-pr`
 
 ```
-/complete-skuld-pr
+/jessstack:complete-skuld-pr
 ```
 
 The command has no arguments. It uses the last pull request that the session mentions.

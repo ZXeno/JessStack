@@ -1,9 +1,10 @@
 ## About
-This repo contains the agent skills, commands, and Claude Code tools I use, written by myself and others. Any skill written by someone else has been provided with attribution immediately below. This repo will only contain the skills and commands I specifically use, create, or modify, with attribution/source going back to the ones I have brought in for my own use.
+
+This repo holds the agent skills, commands, agents, and Claude Code tools that I use. I wrote some of them. Other people wrote the others. The list below gives the source of each skill that another person wrote. The repo holds only the items that I use, create, or change.
 
 ### Attributions
-- `unslop` - [poteto](https://github.com/cursor/plugins/tree/main/pstack)
-- `rust-skills` - [leonardomso](https://github.com/leonardomso/rust-skills/tree/master)
+
+- `unslop`, `architect`, `why` - [poteto](https://github.com/cursor/plugins/tree/main/pstack)
 - `svelte-code-writer` - [sveltejs](https://github.com/sveltejs/ai-tools)
 - `svelte-core-bestpractices` - [sveltejs](https://github.com/sveltejs/ai-tools)
 - `frontend-design` - [Anthropic](https://github.com/anthropics/skills)
@@ -13,38 +14,95 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 
 ## Contents
 
-| Directory | Contents |
+| Path | Contents |
 |---|---|
-| `skills/` | Agent skills. Each skill is a directory with a `SKILL.md` file. |
-| `commands/` | Slash commands, used to specify workflows and workflow rules. The frontmatter sets effort level. (`effort`). |
-| `rules/` | Rule files for `~/.claude/rules/`. |
-| `profile.CLAUDE.md` | Instructions for all projects. This file goes in `~/.claude/` with the name `CLAUDE.md`. |
-| `claude-specific-additions/` | A Claude Code status line script and its installer. |
+| `.claude-plugin/` | The plugin manifest (`plugin.json`) and the marketplace file (`marketplace.json`). |
+| `skills/` | Agent skills. Each skill is a directory with a `SKILL.md` file. A parent directory groups the skills by source. |
+| `commands/` | Slash commands that define workflows and workflow rules. The `effort` field in the frontmatter sets the effort level. |
+| `agents/` | Subagent definitions. |
+| `agent-rules/` | Rule files that agents read. Each subdirectory has the name of its agent. |
+| `rules/` | Rule files for `~/.claude/rules/`. The plugin does not install these. |
 
-### Skills
+## Install
+
+The repo is a Claude Code plugin named `jessstack`. The plugin holds all skills, agents, agent rules, and commands in the repo. The repo is also a marketplace named `jessstack` that lists the plugin.
+
+Add the marketplace from your clone of the repo, then install the plugin:
+
+```bash
+claude plugin marketplace add /path/to/agent-skills
+claude plugin install jessstack@jessstack
+```
+
+Claude Code loads the plugin from your clone and does not copy it. A change to a file in the clone takes effect at the next session start, or when you run `/reload-plugins` in a session.
+
+The plugin adds the prefix `jessstack:` to each name. Run a skill as `/jessstack:<skill>`, for example `/jessstack:review-pr`, and a command as `/jessstack:<command>`. The agents are `jessstack:comment-terminator` and `jessstack:test-guy`.
+
+If you copied skills, commands, or agents from this repo to `~/.claude/` before, delete those copies. Claude Code loads the copies and the plugin, so each item shows two times.
+
+After you install the plugin, run `/jessstack:setup-jessstack` once. It writes the JessStack glossary and the Claude rules that you select into `~/.claude/CLAUDE.md`, and it can install the status line.
+
+The status line scripts and some skills run Bash commands. On native Windows, install Git for Windows.
+
+## Skills
+
+### JessStack skills
+
+`skills/jessstack/` holds my skills for Claude Code and other LLM agents.
+
+Some JessStack skills read the JessStack glossary in `~/.claude/CLAUDE.md`. The glossary names the tracker, the name of a work item in that tracker, and the notification tool. Run `setup-jessstack` once to write it.
 
 | Skill | Use |
 |---|---|
 | `code-writing-helper` | Write code that is safe for the next agent to copy. Fix root causes, keep comments few, verify each change with a run, and turn each correction into a deterministic check. |
-| `create-project` | Grill the user to define a new project, then create its board and charter in Skuld. |
+| `create-project` | Grill the user to define a new project, then create its project and charter in the tracker. |
 | `deep-research` | Research a topic across many sources with subagents, then write a report. |
-| `feature-spec-grill` | Grill the user on a Skuld card until the card has a story, settled decisions, and testable acceptance criteria. Then move the card to To Do. |
-| `frontend-design` | Give direction on the visual design of a new or changed user interface. |
-| `gitea-mcp` | Configure the Gitea MCP server and call its tools. |
+| `documentation-writing-guidelines` | Write technical documents in ADS-STE100 Simplified Technical English. Gives rules for how-to articles, spec sheets, technical references, and tutorials. |
+| `feature-spec-grill` | Grill the user on a work item until the work item has a story, settled decisions, and testable acceptance criteria. Then move the work item to To Do. |
+| `review-pr` | Review a pull request on any Git hosting service with one review pass and one filter pass. Post the comments to the pull request. |
+| `rm-comments` | Spawn the `comment-terminator` agent, audit its report, fix the accepted `MUST KILL` flags at the root cause, and offer checks for constraint comments. |
+| `setup-jessstack` | Ask the user for the tracker, the work item name, and the notification tool. Write the glossary and the Claude rules that the user selects into `~/.claude/CLAUDE.md`, between the `<!-- jessstack:begin -->` and `<!-- jessstack:end -->` markers. Install the status line if the user wants it. |
+| `technical-debt-detection` | Find and report technical debt in a codebase. |
+
+### Matt Pocock skills
+
+| Skill | Use |
+|---|---|
 | `grill` | Interview the user relentlessly about a plan, decision, or idea until you reach a shared understanding. |
 | `handoff` | Write a handoff document from the current conversation for a different agent. |
-| `review-pr` | Review a Gitea pull request with one review pass and one filter pass. Post the comments through the Gitea MCP tools. |
-| `rune-mcp` | Configure the Rune MCP server, a Telegram bot over stdio, and call its tools. |
-| `rune-send-message` | Send a Telegram message or notification through the Rune MCP tools. |
-| `rust-skills` | Rust coding guidelines. 265 rules in 26 categories. |
-| `rust-unit-testing` | Write and organize Rust unit tests. |
+
+### Pstack skills
+
+| Skill | Use |
+|---|---|
+| `unslop` | Remove AI writing patterns from text. |
+| `architect` | Before you write code, find each system that the change touches. Sketch two designs of the types, signatures, and module boundaries, and pick one. |
+| `why` | Find why code works as it does, or why a decision was made. Read the commits and pull request discussions, and cite them. |
+
+### Anthropic skills
+
+| Skill | Use |
+|---|---|
+| `frontend-design` | Give direction on the visual design of a new or changed user interface. |
 | `skill-creator` | Create skills, change skills, and measure how well a skill works. |
+
+### Language skills
+
+`skills/lang-skills/` holds skills for one programming language.
+
+| Skill | Use |
+|---|---|
+| `rust-unit-testing` | Write and organize Rust unit tests. |
 | `svelte-code-writer` | Look up Svelte 5 documentation and analyze Svelte code from the command line. |
 | `svelte-core-bestpractices` | Write and analyze Svelte components and modules. |
-| `technical-debt-detection` | Find and report technical debt in a codebase. |
-| `unslop` | Remove AI writing patterns from text. |
 
-### Commands
+### Other skills
+
+| Skill | Use |
+|---|---|
+| `gitea-mcp` | Configure the Gitea MCP server and call its tools. |
+
+## Commands
 
 | Command | Use |
 |---|---|
@@ -53,28 +111,23 @@ This repo contains the agent skills, commands, and Claude Code tools I use, writ
 | `impl-work-plan` | Begin implementation of a work plan from a plan file. Save and open an implementation report when done. |
 | `multi-card-implement` | Implement more than one Skuld card with the same steps. |
 | `plan-skuld-card-impl` | Create an implementation plan for a Skuld card. Grill on the acceptance criteria before planning. |
-| `resolve-pr-comments` | Resolve the comments on a Gitea pull request. Read the related Skuld card. |
+| `resolve-pr-comments` | Resolve the comments on a pull request. Read the related Skuld card. |
 | `review-skuld-pr` | Review a pull request against the acceptance criteria of its Skuld card. |
 
-Refer to [`commands/README.md`](commands/README.md) for the arguments, the steps, and the install procedure of each command.
+Refer to [`commands/README.md`](commands/README.md) for the arguments and the steps of each command.
 
-## Profile and rules
+## Agents
 
-### `profile.CLAUDE.md`
+`agents/` holds subagent definitions. The plugin installs them.
 
-`profile.CLAUDE.md` holds the instructions that apply to all projects. The file is intended to exist in `~/.claude/` with the name `CLAUDE.md`.
+| Agent | Use |
+|---|---|
+| `comment-terminator` | Find comments and lint suppressions in C#, TypeScript, Rust, Svelte, Razor, and Python code, and flag workaround code. The `rm-comments` skill spawns this agent. |
+| `test-guy` | Run the test suite of the project and report each failed test with its file, line, error message, and stack trace. |
 
-Copy the file from the repo root:
+`comment-terminator` reads its language rules from `agent-rules/comment-terminator/` in the plugin, one file for each language.
 
-```bash
-cp profile.CLAUDE.md ~/.claude/CLAUDE.md
-```
-
-This command replaces a `~/.claude/CLAUDE.md` that exists. To keep the old file, copy it to a different name first.
-
-The profile tells the agent to apply the `unslop` skill. Install that skill with the profile.
-
-### Rules
+## Rules
 
 `rules/` holds rule files. Each file is intended to exist in `~/.claude/rules/`.
 
@@ -91,7 +144,7 @@ cp rules/*.md ~/.claude/rules/
 
 ## Claude Code status line
 
-`claude-specific-additions/statusline.sh` writes this line:
+`skills/jessstack/setup-jessstack/scripts/statusline.sh` writes this line:
 
 ```
 <tokens> | Context: <pct>% | Session window: <pct>% | Weekly limit: <pct>% | Effort: <level>
@@ -111,10 +164,12 @@ The script uses bash, grep, sed, and tr.
 
 ### Install
 
-Run the installer from the repo root:
+Run `/jessstack:setup-jessstack` and accept the status line. The skill asks before it changes `settings.json`.
+
+To install without the skill, run the installer from the repo root:
 
 ```bash
-./claude-specific-additions/install-statusline.sh
+./skills/jessstack/setup-jessstack/scripts/install-statusline.sh
 ```
 
 The installer does these steps:
@@ -173,5 +228,5 @@ A few tips I've picked up along the way for writing useful skills:
 - Keep scripts and reference files in the `skill-name/resources/` directory.
 - Tell the agent what to achieve.
 - Provide constraints, not procedures.
-- Don't skip negative cases. (i.e. Think about when a skill should **NOT** fire.
+- Don't skip negative cases. Think about when a skill should **NOT** fire.
 - Always test it before you ship it.

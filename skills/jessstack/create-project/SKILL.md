@@ -1,20 +1,19 @@
 ---
 name: create-project
-description: Grill the user to define a new project, then create its tracker project and charter in the tracker. Use whenever the user wants to start, set up, kick off, or charter a new project, or when another skill such as feature-spec-grill finds no tracker project for the project. Use it even if the user does not say "charter". GLOSSARY.md defines the tracker and the work item name.
-effort: xhigh
+description: Grill the user to define a new project, then create its tracker project and charter in the tracker. Use whenever the user wants to start, set up, kick off, or charter a new project, or when another skill such as feature-spec-grill finds no tracker project for the project. Use it even if the user does not say "charter". The JessStack glossary in CLAUDE.md defines the tracker and the work item name.
 ---
 
 # Create project
 
-This skill defines a new project with the user, then creates its tracker project and writes its charter. GLOSSARY.md defines the `tracker` and the `work item name`. Use the work item name from GLOSSARY.md when you talk to the user. The charter holds the purpose, goals, constraints, risks, and technical baseline. Later skills, such as /feature-spec-grill, read the charter to guide each work item.
+This skill defines a new project with the user, then creates its tracker project and writes its charter. The JessStack glossary in CLAUDE.md defines the `tracker` and the `work item name`. Use the work item name from the JessStack glossary when you talk to the user. The charter holds the purpose, goals, constraints, risks, and technical baseline. Later skills, such as /feature-spec-grill, read the charter to guide each work item.
 
 A tracker project is the board, repository, or project in the tracker that holds the work items for this project.
 
 ## Rules
 
 - Get facts from the tracker and the codebase. Ask the user only for decisions.
-- Use the tools in the "Tracker MCP tools" table of GLOSSARY.md. For an action that the table does not list, use the tracker tool that does that action. If no tracker tool does the action, tell the user. Then give them the text to enter by hand.
-- If GLOSSARY.md names no tracker, tell the user to run /setup-jessstack and stop.
+- Use the tools in the "Tracker MCP tools" table of the JessStack glossary. For an action that the table does not list, use the tracker tool that does that action. If no tracker tool does the action, tell the user. Then give them the text to enter by hand.
+- If the JessStack glossary names no tracker, tell the user to run /setup-jessstack and stop.
 - If no tool for the tracker is available, ask the user where they want the project to exist. Stop and wait for further instruction.
 - If a tracker tool returns 401, 403, or any "unauthorized" result, stop all work. Tell the user which call failed and give the error text. Do not try a different tool, account, or route. Only the user can fix access.
 - Do not bypass a security control for any reason.

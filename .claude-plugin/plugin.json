@@ -1,0 +1,19 @@
+{
+  "name": "jessstack",
+  "description": "JessStack skills, agents, and commands, with the third-party skills that JessStack uses.",
+  "skills": [
+    "./skills/jessstack",
+    "./skills/lang-skills",
+    "./skills/matt-pocock-skills",
+    "./skills/pstack-skills"
+  ],
+  "commands": [
+    "./commands/complete-skuld-pr.md",
+    "./commands/impl-skuld-card.md",
+    "./commands/impl-work-plan.md",
+    "./commands/multi-card-implement.md",
+    "./commands/plan-skuld-card-impl.md",
+    "./commands/resolve-pr-comments.md",
+    "./commands/review-skuld-pr.md"
+  ]
+}
